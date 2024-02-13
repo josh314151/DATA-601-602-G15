@@ -39,19 +39,19 @@ predicted_rate = lm(W ~ Age, data=data)
 predicted_rate$coef
 ```
 
-The linear regression equation representing the model is $\hat{HR_{i}} = 78.4163472 - 0.1852872*Age_{i}$. ***Correlation Coefficient Check***:
+The linear regression equation representing the model is $\hat{W_{i}} = 11.884170 + 3.145238*Age_{i}$. ***Correlation Coefficient Check***:
 
 ```{r}
 age <- data$Age
-hr <- data$W
-cor(age, hr)
+wake <- data$W
+cor(age, wake)
 ```
 
-Correlation Coefficient shows that there is a negative correlation between the age and average HR during sleep.
+Correlation Coefficient shows that there is a strong positive correlation between the age and amount of time spent awake during sleep.
 
-***Check significance of coefficient estimates*** Null hypothesis: $H_{0}: \beta_{1} = 0$, $H_{0}: \beta_{0} = 0$
+***Check significance of coefficient estimates*** Null hypothesis: $H_{0}: \beta_{1} = 0$
 
-Alternative hypothesis: $H_{A}: \beta_{1} \neq 0$, $H_{0}: \beta_{0} \neq 0$
+Alternative hypothesis: $H_{A}: \beta_{1} \neq 0$
 
 We will set the alpha value to 0.05.
 
@@ -61,17 +61,17 @@ We can use a t test to check our claim.
 summary(predicted_rate)
 ```
 
-From our t-test, we get test statistics of $\beta_{0}$ is 21.319 and $\beta_{1}$ is -2.626. P-values of $\beta_{0}$ is $2*10^-16$ and $\beta_{1}$ is 0.01041. The p-values are smaller than the set alpha value of 0.05, so we reject our null hypothesis that the linear regression coefficient and intercept are 0. Therefore, we can conclude that the average HR during sleep can be expressed as a linear function of age, and since $\beta_{1} < 0$, we can say it is also negative.
+From our t-test, we get test statistics of $\beta_{1}$ is $5.394$. P-values of $\beta_{1}$ is $8.37*10^-7$. The p-value of $\beta_{1}$ is smaller than the set alpha value of 0.05, so we reject our null hypothesis that the linear regression coefficient is 0. Therefore, we can conclude that the time spent awake during sleep can be expressed as a linear function of age, and since $\beta_{1} > 0$, we can say it is also positive.
 
-We also get an R-squared value of 0.08221, meaning our independent variable explains approx. 8.22% of the variance in the dependent variable.
+We also get an R-squared value of $0.2878$, meaning our independent variable explains approx. $28.78\%$ of the variance in the dependent variable. A likely cause of the majority o this variance is the presence of various sleep-related illnesses. The data set used in this analysis was from subjects that had at least one sleep-related illness. Given that these illnesses are categorical data where each individual has at least one of several different illnesses, it is beyond the scope of this analysis to control for these factors.
 
 ***Residual Analysis***:
 
 There are two conditions that must be met for our linear regression model to be valid.
 
-**1. Normality of residuals:** The dependent variable (hrat) must be normally distributed with a mean of $\mu$ and standard deviations of $\sigma$. To check this we will plot a stat_qq plot of the residuals since $e_{i} = y_{i} - \hat{y_{i}}$, if y is normally distributed, so will the residuals.
+**1. Normality of residuals:** The dependent variable (wake time) must be normally distributed with a mean of $\mu$ and standard deviations of $\sigma$. To check this we will plot a stat_qq plot of the residuals since $e_{i} = y_{i} - \hat{y_{i}}$, if y is normally distributed, so will the residuals. We will also do a Shapiro test to test for normality.
 
-**2. Homoscedasticity:** For each distinct value of the independant variable (season), the dependent variable (hrat) has the same standard deviation $\sigma$. To check this, we will plot a scatterplot of the fitted values and the residuals.
+**2. Homoscedasticity:** For each distinct value of the independent variable (age), the dependent variable (wake time) has the same standard deviation $\sigma$. To check this, we will plot a scatter plot of the fitted values and the residuals. We will also perform a Breusch pagan test to test for homoscedasticity.
 
 ```{r}
 # Get the and residuals fitted values
@@ -86,7 +86,14 @@ data.df = data.frame(predicted.rate, ei_hrat)
 ggplot(data.df, aes(sample = ei_hrat)) +  stat_qq(col='blue') + stat_qqline(col='red') + ggtitle("Normal Probability Plot of Residuals")
 ```
 
-Looking the normality probability plot, the residuals do seem to be approximately normally distributed and therefore so is the dependent variable (hrat). The normality of residuals condition holds.
+Looking the normality probability plot, the residuals do seem to be approximately normally distributed and therefore so is the dependent variable (wake time). The normality of residuals condition holds.
+
+```{r}
+shapiro.test(data$Age)
+shapiro.test(data$W)
+```
+
+Given that the p-value for both age and wake time are greater than $0.05$, we fail to reject the null hypothesis that the data is normally distributed. Therefore, the data passes the normality test.
 
 **Homoscedasticity:**
 
@@ -94,15 +101,12 @@ Looking the normality probability plot, the residuals do seem to be approximatel
 ggplot(data.df, aes(x = predicted.rate, y = ei_hrat)) +  geom_point(size=2, col='blue', position="jitter") + xlab("Predicted Home Run Rate") + ylab("Residuals") + ggtitle("Plot of Fits to Residuals") + geom_hline(yintercept=0, color="red", linetype="dashed")
 ```
 
-Looking the plot of fits to residuals, the residuals do seem to be evenly distributed over the home run rate. We can they say that the condition of homoscedasticity holds.
-
-Since both conditions hold, our linear regression model is valid.
+Looking at the plot of fits to residuals, the residuals do seem to be evenly distributed over wake time. We can they say that the condition of homoscedasticity holds.
 
 ```{r}
 ols_test_breusch_pagan(predicted_rate)
 ```
 
-```{r}
-shapiro.test(data$Age)
-shapiro.test(data$W)
-```
+Given the p-value ($0.4501828$) is greater than the threshold of $0.05$, we fail to reject the null hypothesis that the data has constant variance. Therefore, the data passes the homoscedasticity test.
+
+Since both conditions hold, our linear regression model is valid.
