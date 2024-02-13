@@ -13,6 +13,7 @@ library(ggplot2)
 library(dplyr)
 library(mosaic)
 library(resampledata)
+library(olsrr)
 ```
 
 Part1: ***Read data***:
@@ -20,29 +21,33 @@ Part1: ***Read data***:
 ```{r}
 # Read data 
 data_s1 = read.csv("summary_data.csv")
-data_s3 = read.csv("summary_data_subgroup_3.csv")
+data_stages = read.csv("sleep_stage_output.csv")
 
-head(data_s1, 10)
-head(data_s3, 10)
+data = c(data_s1, data_stages)
+
+data = data.frame(data)
+
+data = filter(data, Age>0)
+data = filter(data, W < 400)
 ```
 
 ***Build Model***:
 
 ```{r}
-ggplot(data_s1, aes(x = Age, y = Average_HR)) + geom_smooth(method = "lm") + geom_point() + xlab("Age") + ggtitle("Age vs Average HR") 
-predicted_rate = lm(Average_HR ~ Age, data=data)
+ggplot(data, aes(x = Age, y = W)) + geom_smooth(method = "lm") + geom_point() + xlab("Age") + ylab("Wake Time") + ggtitle("Age vs Wake Time") 
+predicted_rate = lm(W ~ Age, data=data)
 predicted_rate$coef
 ```
 
-The linear regression equation representing the model is $\hat{HRAT_{i}} = -7.992499290 + 0.004044169Year_{i}$. ***Correlation Coefficient Check***:
+The linear regression equation representing the model is $\hat{HR_{i}} = 78.4163472 - 0.1852872*Age_{i}$. ***Correlation Coefficient Check***:
 
 ```{r}
-season <- data$season
-hrat <- data$hrat
-cor(season, hrat)
+age <- data$Age
+hr <- data$W
+cor(age, hr)
 ```
 
-Correlation Coefficient shows that there is a strong positive correlation between the season/year and home run rate of Barry Bonds.
+Correlation Coefficient shows that there is a negative correlation between the age and average HR during sleep.
 
 ***Check significance of coefficient estimates*** Null hypothesis: $H_{0}: \beta_{1} = 0$, $H_{0}: \beta_{0} = 0$
 
@@ -56,9 +61,9 @@ We can use a t test to check our claim.
 summary(predicted_rate)
 ```
 
-From our t-test, we get test statistics of $\beta_{0}$ is -4.549782 and $\beta_{1}$ is 4.589384. P-values of $\beta_{0}$ is 0.0006664296 and $\beta_{1}$ is 0.0006222474. The p-values are smaller than the set alpha value of 0.05, so we reject our null hypothesis that the linear regression coefficient and intercept are 0. Therefore, we can conclude that the home run rate of Bary Bonds can be expressed as a linear function of the season, and since $\beta_{1} > 0$, we can say it is also positive.
+From our t-test, we get test statistics of $\beta_{0}$ is 21.319 and $\beta_{1}$ is -2.626. P-values of $\beta_{0}$ is $2*10^-16$ and $\beta_{1}$ is 0.01041. The p-values are smaller than the set alpha value of 0.05, so we reject our null hypothesis that the linear regression coefficient and intercept are 0. Therefore, we can conclude that the average HR during sleep can be expressed as a linear function of age, and since $\beta_{1} < 0$, we can say it is also negative.
 
-We also get an R-squared value of 0.6371, meaning out independant variable explains approx. 63.71% of the variance in the dependent variable, which is quite good.
+We also get an R-squared value of 0.08221, meaning our independent variable explains approx. 8.22% of the variance in the dependent variable.
 
 ***Residual Analysis***:
 
@@ -93,14 +98,11 @@ Looking the plot of fits to residuals, the residuals do seem to be evenly distri
 
 Since both conditions hold, our linear regression model is valid.
 
-***Predict home run rate in season 2001***:
-
 ```{r}
-predict(predicted_rate, newdata=data.frame(season = 2001), interval="predict")
+ols_test_breusch_pagan(predicted_rate)
 ```
 
-Using our linear regression model, we get a predicted HRAT of 0.099883 for Barry Bonds' 2001 season. Barry Bonds' actual HRAT for the 2001 season was 0.153400, so our predicted error is $0.153400-0.099883=0.053517$.
-
-We also calculated a 95% prediction interval of HRAT for the 2001 season. This means we can say with 95% confidence that the value of Barry Bonds' HRAT for the 2001 season is between 0.06663 and 0.13314 based on our previous records. However, Barry Bonds' actual HRAT is not in this range.
-
-In conclusion, we cannot say whether or not Barry Bonds was on steroids in the 2001 season, but it does seem like there was a factor that attributed to a much larger HRAT in the 2001 season than what was expected.
+```{r}
+shapiro.test(data$Age)
+shapiro.test(data$W)
+```
