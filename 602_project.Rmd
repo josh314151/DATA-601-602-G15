@@ -275,7 +275,7 @@ model <- lm(W ~ Age, data = dataset)
 model$coef
 ```
 
-The linear regression equation representing the model is $\hat{W_{i}} = 11.884 + 3.145*Age_{i}$
+The linear regression equation representing the model is $\hat{W_{i}} = 11.36195 + 3.16015*Age_{i}$
 
 ```{r, message=FALSE}
 ggplot(dataset, aes(x = Age, y = W)) + 
@@ -317,7 +317,7 @@ coef(summary(model))[, "Pr(>|t|)"]
 -   **t-value for Intercept**: 0.3721653
 -   **p-value for Intercept**: 0.7108783
 
-The intercept's t-value is not significantly far from zero, and the corresponding p-value is much greater than the alpha level of 0.05. This result suggests that the intercept is not statistically significantly different from zero at the conventional significance levels. Therefore, we fail to reject the null hypothesis $H_0: \alpha_{0} = 0$ in favor of the alternative hypothesis $H_1: \alpha_{0} \neq 0$.
+The intercept's t-value is not significantly far from zero, and the corresponding p-value is much greater than the alpha level of 0.05. This result suggests that the intercept is not statistically significantly different from zero at the conventional significance levels. Therefore, we fail to reject the null hypothesis $H_0: \beta_{0} = 0$ in favor of the alternative hypothesis $H_1: \beta_{0} \neq 0$.
 
 ### Age
 
@@ -389,6 +389,6 @@ The even distribution of residuals across the predicted values, as evidenced by 
 
 Given that our analysis has confirmed both key assumptions of linear regression—normality of residuals and homoscedasticity—we can assert that our linear regression model is valid. This validity implies that the model is well-founded and that the statistical inferences drawn from it, such as confidence intervals and hypothesis tests on the regression coefficients, are based on solid assumptions.
 
-## Refrences
+## References
 
 Khalighi Sirvan, Teresa Sousa, José Moutinho Santos, and Urbano Nunes. “ISRUC-Sleep: A comprehensive public dataset for sleep researchers.“Computer methods and programs in biomedicine 124 (2016): 180-192.
