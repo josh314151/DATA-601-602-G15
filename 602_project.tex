@@ -687,7 +687,9 @@ demographic factors like age.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{physiological\_data }\OtherTok{\textless{}{-}}\NormalTok{ dataset[, }\FunctionTok{c}\NormalTok{(}\StringTok{"Average\_SpO2"}\NormalTok{, }\StringTok{"Average\_HR"}\NormalTok{, }\StringTok{"Min\_SpO2"}\NormalTok{, }\StringTok{"Min\_HR"}\NormalTok{, }\StringTok{"Max\_SpO2"}\NormalTok{, }\StringTok{"Max\_HR"}\NormalTok{, }\StringTok{"W"}\NormalTok{, }\StringTok{"N3"}\NormalTok{,}\StringTok{"N2"}\NormalTok{,}\StringTok{"R"}\NormalTok{,}\StringTok{"N1"}\NormalTok{)]}
+\NormalTok{physiological\_data }\OtherTok{\textless{}{-}}\NormalTok{ dataset[, }\FunctionTok{c}\NormalTok{(}\StringTok{"Average\_SpO2"}\NormalTok{, }\StringTok{"Average\_HR"}\NormalTok{, }\StringTok{"Min\_SpO2"}\NormalTok{,}
+                                  \StringTok{"Min\_HR"}\NormalTok{, }\StringTok{"Max\_SpO2"}\NormalTok{, }\StringTok{"Max\_HR"}\NormalTok{, }\StringTok{"W"}\NormalTok{, }\StringTok{"N3"}\NormalTok{,}
+                                  \StringTok{"N2"}\NormalTok{,}\StringTok{"R"}\NormalTok{,}\StringTok{"N1"}\NormalTok{)]}
 \NormalTok{cor\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(physiological\_data, }\AttributeTok{use =} \StringTok{"complete.obs"}\NormalTok{)}
 
 \FunctionTok{corrplot}\NormalTok{(cor\_matrix, }\AttributeTok{method =} \StringTok{"color"}\NormalTok{, }\AttributeTok{type =} \StringTok{"upper"}\NormalTok{, }\AttributeTok{order =} \StringTok{"hclust"}\NormalTok{,}
@@ -720,7 +722,8 @@ physiological factors.
 \begin{Highlighting}[]
 \FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ W)) }\SpecialCharTok{+} 
   \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth =} \DecValTok{10}\NormalTok{, }\AttributeTok{fill =} \StringTok{"\#ff9100"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sex) }\SpecialCharTok{+} 
-  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Distribution of Wake Time"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Wake Time (epochs)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Frequency"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Distribution of Wake Time"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Wake Time (epochs)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Frequency"}\NormalTok{) }\SpecialCharTok{+} 
   \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
@@ -752,7 +755,8 @@ that on average males have a higher wake time than women.
 \FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Average\_HR, }\AttributeTok{y =}\NormalTok{ Average\_SpO2, }\AttributeTok{color =}\NormalTok{ Age)) }\SpecialCharTok{+} 
   \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+} 
   \FunctionTok{scale\_color\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{high =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+} 
-  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Average HR vs. Average SpO2, Colored by Age"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Average Heart Rate (bpm)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Average SpO2 (\%)"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Average HR vs. Average SpO2, Colored by Age"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Average Heart Rate (bpm)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Average SpO2 (\%)"}\NormalTok{) }\SpecialCharTok{+} 
   \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}

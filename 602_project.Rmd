@@ -15,7 +15,7 @@ library(dplyr)
 library(resampledata)
 library(lmtest)
 library(corrplot)
-knitr::opts_chunk$set(tidy.opts = list(width.cutoff = 120), tidy = TRUE)
+knitr::opts_chunk$set(tidy.opts = list(width.cutoff = 60), tidy = TRUE)
 ```
 
 # Part 1
@@ -221,7 +221,9 @@ For a more comprehensive exploration of the ISRUC-Sleep dataset, let's delve int
 
 ```{r fig.width=8}
 
-physiological_data <- dataset[, c("Average_SpO2", "Average_HR", "Min_SpO2", "Min_HR", "Max_SpO2", "Max_HR", "W", "N3","N2","R","N1")]
+physiological_data <- dataset[, c("Average_SpO2", "Average_HR", "Min_SpO2",
+                                  "Min_HR", "Max_SpO2", "Max_HR", "W", "N3",
+                                  "N2","R","N1")]
 cor_matrix <- cor(physiological_data, use = "complete.obs")
 
 corrplot(cor_matrix, method = "color", type = "upper", order = "hclust",
@@ -240,7 +242,8 @@ ggplot(dataset, aes(x = Age)) +
 
 ggplot(dataset, aes(x = W)) + 
   geom_histogram(binwidth = 10, fill = "#ff9100", color = "black") + facet_wrap(~Sex) + 
-  labs(title = "Distribution of Wake Time", x = "Wake Time (epochs)", y = "Frequency") + 
+  labs(title = "Distribution of Wake Time", x = "Wake Time (epochs)",
+       y = "Frequency") + 
   theme_minimal()
 ```
 
@@ -260,7 +263,8 @@ A boxplot can illustrate differences in wake time across sexes, highlighting any
 ggplot(dataset, aes(x = Average_HR, y = Average_SpO2, color = Age)) + 
   geom_point(alpha = 0.7) + 
   scale_color_gradient(low = "blue", high = "red") + 
-  labs(title = "Average HR vs. Average SpO2, Colored by Age", x = "Average Heart Rate (bpm)", y = "Average SpO2 (%)") + 
+  labs(title = "Average HR vs. Average SpO2, Colored by Age",
+       x = "Average Heart Rate (bpm)", y = "Average SpO2 (%)") + 
   theme_minimal()
 ```
 
