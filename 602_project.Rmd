@@ -219,7 +219,7 @@ The summary stats show that there are still some incomplete rows in our dataset 
 
 For a more comprehensive exploration of the ISRUC-Sleep dataset, let's delve into additional visualizations that can illuminate various aspects of the data. These visualizations will help uncover patterns, trends, and correlations within the dataset, providing deeper insights into sleep behavior, physiological measures, and their interactions with demographic factors like age.
 
-```{r fig.width=8}
+```{r fig.width=8, fig.height=8}
 
 physiological_data <- dataset[, c("Average_SpO2", "Average_HR", "Min_SpO2",
                                   "Min_HR", "Max_SpO2", "Max_HR", "W", "N3",
