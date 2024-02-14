@@ -4,10 +4,7 @@ author: "Josh Brauner, Raahim Salman, Ze Yu"
 date: "Feburary 14th, 2024"
 output:
   pdf_document:
-    latex_engine: xelatex
     keep_tex: true
-  html_document:
-    df_print: paged
 ---
 
 ```{r, include=FALSE}
@@ -28,7 +25,7 @@ knitr::opts_chunk$set(tidy.opts = list(width.cutoff = 60), tidy = TRUE)
 In the initial phase of our project, the primary goal is to prepare the dataset for analysis. This preparation involves loading the data and then removing data points that could potentially skew or bias our results. Specifically, the dataset encompasses annual home run rates (home runs per at bat) for Barry Bonds, covering several seasons. Per the project's guidelines, it's imperative to exclude the 2001 season—the year Barry Bonds hit a record 73 home runs—from our dataset before proceeding with any further analysis. The rationale behind excluding this particular season is rooted in its outlier status within the scope of our investigation, possibly due to factors such as intentional walks, which are not reflective of the typical performance trends we aim to analyze.
 
 ```{r}
-bonds_data <- read.csv("/Users/rs/MDataSci/data601/project/bondsdata.csv")
+bonds_data <- read.csv("bondsdata.csv")
 bonds_data_filtered <- subset(bonds_data, season != 2001)
 tail(bonds_data_filtered)
 ```
@@ -37,7 +34,7 @@ The removal of the 2001 season data point is a critical step in ensuring a more 
 
 ## Model Building
 
-The statistical model we plan to build, \(HRAT_{i} = A + B \times Year_{i} + e_{i}\), where \(HRAT_{i}\) represents the home run rate in year \(i\), and \(Year_{i}\) denotes the year of the season, is designed to elucidate the relationship between time (years) and Bonds' home run rates. Through quantifying the trend over the specified years, this linear regression model serves as a tool for analyzing potential significant deviations in performance. Such deviations, if present, could align with steroid use, under the premise that such use would manifest as an atypical increase in home run rates.
+The statistical model we plan to build, $HRAT_{i} = A + B \times Year_{i} + e_{i}$, where $HRAT_{i}$ represents the home run rate in year $i$, and $Year_{i}$ denotes the year of the season, is designed to elucidate the relationship between time (years) and Bonds' home run rates. Through quantifying the trend over the specified years, this linear regression model serves as a tool for analyzing potential significant deviations in performance. Such deviations, if present, could align with steroid use, under the premise that such use would manifest as an atypical increase in home run rates.
 
 ```{r}
 model <- lm(hrat ~ season, data = bonds_data_filtered)
@@ -59,6 +56,7 @@ Importantly, to ensure the integrity of the conclusions drawn from this model, w
 ## Model Assumption and Validation
 
 ***Correlation Coefficient Check***:
+
 ```{r}
 cor(bonds_data_filtered$season, bonds_data_filtered$hrat)
 ```
@@ -71,7 +69,6 @@ In the context of analyzing the significance of the coefficient estimate for the
 
 Null hypothesis: $H_{0}: \beta_{1} = 0$, $H_{0}: \beta_{0} = 0$
 
-
 Alternative hypothesis: $H_{A}: \beta_{1} \neq 0$, $H_{A}: \beta_{0} \neq 0$
 
 ```{r}
@@ -81,27 +78,31 @@ coef(summary(model))[, "Pr(>|t|)"]
 ```
 
 ### Intercept
-- **t-value for Intercept**: -4.549782
-- **p-value for Intercept**: 0.0006664296
 
-The intercept's t-value is significantly negative, and the corresponding p-value is much less than the alpha level of 0.05. This statistically significant result suggests that the intercept is significantly different from zero. Therefore we reject the null hypothesis $H_0: B_{0} = 0$ in favor of the alternative hypothesis $H_1: B_{0} \neq 0$$.  
+-   **t-value for Intercept**: -4.549782
+-   **p-value for Intercept**: 0.0006664296
+
+The intercept's t-value is significantly negative, and the corresponding p-value is much less than the alpha level of 0.05. This statistically significant result suggests that the intercept is significantly different from zero. Therefore we reject the null hypothesis $H_0: B_{0} = 0$ in favor of the alternative hypothesis $H_1: B_{0} \neq 0$\$.
 
 ### Season
-- **t-value for Season**: 4.589384
-- **p-value for Season**: 0.0006222474
 
-The t-value for the year coefficient is significantly positive, indicating a positive relationship between the year and HR/AB ratio for Barry Bonds in the dataset analyzed. The p-value associated with this t-value is much less than 0.05, strongly suggesting that we reject the null hypothesis $H_0: B_{1} = 0$ in favor of the alternative hypothesis $H_1: B_{1} \neq 0$. 
+-   **t-value for Season**: 4.589384
+-   **p-value for Season**: 0.0006222474
+
+The t-value for the year coefficient is significantly positive, indicating a positive relationship between the year and HR/AB ratio for Barry Bonds in the dataset analyzed. The p-value associated with this t-value is much less than 0.05, strongly suggesting that we reject the null hypothesis $H_0: B_{1} = 0$ in favor of the alternative hypothesis $H_1: B_{1} \neq 0$.
 
 ### Implications
+
 The statistical analysis of the year's coefficient reveals that there is a significant linear relationship between the year and the HR/AB ratio. This means that the year significantly predicts the HR/AB ratio for Barry Bonds in the years leading up to 2001, excluding the 2001 season itself. The positive t-value indicates that as the year increases, so does the HR/AB ratio, suggesting an improvement in Bonds' performance in hitting home runs per at-bat attempt over time.
 
-Given the alpha level of 0.05 and the very low p-values obtained for both the intercept and the year coefficient, our analysis provides strong statistical evidence to support the conclusion that there was a significant trend in Barry Bonds' home run rates per at-bat over the years analyzed. 
+Given the alpha level of 0.05 and the very low p-values obtained for both the intercept and the year coefficient, our analysis provides strong statistical evidence to support the conclusion that there was a significant trend in Barry Bonds' home run rates per at-bat over the years analyzed.
 
-The R-squared value of 0.6371 in your linear regression model indicates that approximately 63.71% of the variance in the dependent variable is explained by the independent variable. 
+The R-squared value of 0.6371 in your linear regression model indicates that approximately 63.71% of the variance in the dependent variable is explained by the independent variable.
 
 **Residual Analysis**
 
 ### Normality of Residuals
+
 In our specific analysis concerning Barry Bonds' home run rates (HR/AB) as a function of the season (year), the normality of residuals implies that the deviations from the predicted home run rates are random and follow a normal distribution. This condition supports the premise that our linear model is appropriately capturing the relationship between the year and HR/AB without systematic bias.
 
 The evidence supporting the normality of residuals in our analysis comes from both graphical and statistical methods:
@@ -118,7 +119,7 @@ ggplot(residuals_df, aes(sample = Residuals)) +
   theme_minimal()
 ```
 
-In our case, the residuals align closely with the reference line in the Q-Q plot, indicating that their distribution  resembles a normal distribution. This  evidence suggests that the residuals from our linear model do not deviate significantly from normality.
+In our case, the residuals align closely with the reference line in the Q-Q plot, indicating that their distribution resembles a normal distribution. This evidence suggests that the residuals from our linear model do not deviate significantly from normality.
 
 ```{r}
 shapiro.test(residuals)
@@ -153,7 +154,7 @@ The even distribution of residuals across the predicted values, as evidenced by 
 
 Given that our analysis has confirmed both key assumptions of linear regression—normality of residuals and homoscedasticity—we can assert that our linear regression model is valid. This validity implies that the model is well-founded and that the statistical inferences drawn from it, such as confidence intervals and hypothesis tests on the regression coefficients, are based on solid assumptions.
 
-## Prediction of Home Run Rate in 2001 Season 
+## Prediction of Home Run Rate in 2001 Season
 
 ```{r}
 new_data <- data.frame(season = 2001)
@@ -163,7 +164,7 @@ print(predicted_hrab)
 
 The 95% prediction interval for Bonds' HRAT in the 2001 season, ranging from 0.06663 to 0.13314, represents the range within which we would expect Bonds' HRAT to fall, given the trends observed in the data from previous seasons. The fact that Bonds' actual HRAT of 0.153400 falls outside this interval suggests that his performance in 2001 was not only exceptional but also statistically significant in terms of deviation from predicted trends.
 
-While the statistical analysis does not directly address whether Barry Bonds was using steroids in the 2001 season, the significant discrepancy between the predicted and actual HRATs, and the fact that the actual HRAT lies outside the 95% prediction interval, suggest that there were factors influencing Bonds' performance that year beyond what could be expected based on historical trends. 
+While the statistical analysis does not directly address whether Barry Bonds was using steroids in the 2001 season, the significant discrepancy between the predicted and actual HRATs, and the fact that the actual HRAT lies outside the 95% prediction interval, suggest that there were factors influencing Bonds' performance that year beyond what could be expected based on historical trends.
 
 In conclusion, while our linear regression model and subsequent analysis provide valuable insights into Barry Bonds' performance trends leading up to the 2001 season, they also highlight an extraordinary deviation in his 2001 performance that warrants further investigation. The statistical evidence suggests that Bonds' HRAT in 2001 was significantly higher than expected based on past performance, pointing to the presence of additional factors that contributed to this anomaly.
 
@@ -171,9 +172,9 @@ It's important to note that statistical analysis alone cannot prove the use of p
 
 \newpage
 
-# Part II 
+# Part II
 
-## Introduction 
+## Introduction
 
 The ISRUC-Sleep dataset is a resource for researchers interested in the field of sleep studies. This polysomnographic (PSG) dataset was compiled to facilitate a wide range of investigations into sleep patterns, disorders, and the effects of medication on sleep. Comprising data from 100 human adults, including both healthy subjects and those diagnosed with sleep disorders, the dataset is structured to support various research objectives and methodologies.
 
@@ -181,27 +182,25 @@ The ISRUC-Sleep dataset is a resource for researchers interested in the field of
 
 The dataset is organized into three main groups, each tailored to address different research needs:
 
-1. **General Population Data**: It includes one recording session per subject across 100 subjects, offering a broad overview of sleep characteristics in a diverse population.The PSG recordings, associated with each subject, were visually scored by two human experts. The PSG recordings include electrophysiological signals, pneumological signals, and another contextual information of the subjects.
+1.  **General Population Data**: It includes one recording session per subject across 100 subjects, offering a broad overview of sleep characteristics in a diverse population.The PSG recordings, associated with each subject, were visually scored by two human experts. The PSG recordings include electrophysiological signals, pneumological signals, and another contextual information of the subjects.
 
-2. **Healthy Subjects Data**: This subset focuses on 10 healthy individuals, allowing for detailed comparisons between healthy sleep patterns and those affected by sleep disorders.
+2.  **Healthy Subjects Data**: This subset focuses on 10 healthy individuals, allowing for detailed comparisons between healthy sleep patterns and those affected by sleep disorders.
 
-3. **Sleep Stages and Events**: The data contains epoch-by-epoch annotations of sleep stages (Awake, NREM stages N1, N2, N3, and REM) based on the American Academy of Sleep Medicine (AASM) criteria, as well as various sleep-related events and physiological signals (e.g., heart rate, blood-oxygen saturation).
-
+3.  **Sleep Stages and Events**: The data contains epoch-by-epoch annotations of sleep stages (Awake, NREM stages N1, N2, N3, and REM) based on the American Academy of Sleep Medicine (AASM) criteria, as well as various sleep-related events and physiological signals (e.g., heart rate, blood-oxygen saturation).
 
 ### Motivations for Researching Sleep
 
 Researching sleep is crucial for several reasons, reflecting the central role of sleep in human health and well-being:
 
-- **Understanding Sleep Disorders**: With a wide prevalence of sleep disorders across the global population, understanding the nuances of these conditions is vital for developing effective treatments. The ISRUC-Sleep dataset allows researchers to study the specific patterns and anomalies associated with different disorders.
+-   **Understanding Sleep Disorders**: With a wide prevalence of sleep disorders across the global population, understanding the nuances of these conditions is vital for developing effective treatments. The ISRUC-Sleep dataset allows researchers to study the specific patterns and anomalies associated with different disorders.
 
-- **Impact on Health**: Sleep has profound effects on physical health, mental health, and cognitive function. Research can uncover how variations in sleep patterns affect these areas, leading to improved guidelines for healthy sleep and interventions for sleep-related health issues.
+-   **Impact on Health**: Sleep has profound effects on physical health, mental health, and cognitive function. Research can uncover how variations in sleep patterns affect these areas, leading to improved guidelines for healthy sleep and interventions for sleep-related health issues.
 
 In summary, the ISRUC-Sleep dataset is a foundational tool for advancing our understanding of sleep and its complex interplay with human health. It enables researchers to explore questions related to sleep physiology, disorders, treatment effects, and beyond, with the ultimate goal of enhancing sleep quality and health outcomes for individuals around the world.
 
 ```{r}
-summary_data <- read.csv("/Users/rs/MDataSci/data601/project/summary_data.csv")
-summary_data_three <- read.csv("/Users/rs/MDataSci/data601/project/summary_data_subgroup_3.csv")
-sleep_stage_output <- read.csv("/Users/rs/MDataSci/data601/project/sleep_stage_output.csv")
+summary_data <- read.csv("summary_data.csv")
+sleep_stage_output <- read.csv("sleep_stage_output.csv")
 
 dataset <- c(summary_data, sleep_stage_output)
 dataset <- data.frame(dataset)
@@ -218,7 +217,6 @@ summary(dataset)
 
 ## TALK ABOUT SUMMARY STATS
 
-
 For a more comprehensive exploration of the ISRUC-Sleep dataset, let's delve into additional visualizations that can illuminate various aspects of the data. These visualizations will help uncover patterns, trends, and correlations within the dataset, providing deeper insights into sleep behavior, physiological measures, and their interactions with demographic factors like age.
 
 ```{r fig.width=8}
@@ -227,11 +225,11 @@ physiological_data <- dataset[, c("Average_SpO2", "Average_HR", "Min_SpO2", "Min
 cor_matrix <- cor(physiological_data, use = "complete.obs")
 
 corrplot(cor_matrix, method = "color", type = "upper", order = "hclust",
-         tl.col = "black", addCoef.col = "black", mar=c(0,0,2,0),
+         tl.col = "black", mar=c(0,0,2,0),
          title = "Correlation of Physiological Measures")
 ```
 
-A correlation matrix visualization can help identify relationships between continuous variables such as age, wake time, average heart rate (HR), and average blood-oxygen saturation (SpO2). We can see that there are song strong correlations based on the minimums of various physiological factors. 
+A correlation matrix visualization can help identify relationships between continuous variables such as age, wake time, average heart rate (HR), and average blood-oxygen saturation (SpO2). We can see that there are song strong correlations based on the minimums of various physiological factors.
 
 ```{r}
 ggplot(dataset, aes(x = Age)) + 
@@ -241,21 +239,22 @@ ggplot(dataset, aes(x = Age)) +
   theme_minimal()
 
 ggplot(dataset, aes(x = W)) + 
-  geom_histogram(binwidth = 10, fill = "#ff9100", color = "black") + facet_wrap(~Sex)
-  labs(title = "Distribution of Wake Time", x = "Wake Time (minutes)", y = "Frequency") + 
+  geom_histogram(binwidth = 10, fill = "#ff9100", color = "black") + facet_wrap(~Sex) + 
+  labs(title = "Distribution of Wake Time", x = "Wake Time (epochs)", y = "Frequency") + 
   theme_minimal()
 ```
-These plots  show the distribution of ages and wake times within the dataset, separated by sex, concluding that there are more older males than there are women. 
+
+These plots show the distribution of ages and wake times within the dataset, separated by sex, concluding that there are more older males than there are women.
 
 ```{r}
 ggplot(dataset, aes(x = Sex, y = W, fill = Sex)) + 
   geom_boxplot() + 
-  labs(title = "Wake Time by Sex", x = "Sex", y = "Wake Time (minutes)") + 
+  labs(title = "Wake Time by Sex", x = "Sex", y = "Wake Time (epochs)") + 
   scale_fill_brewer(palette = "Set2") + 
   theme_minimal()
 ```
 
-A boxplot can illustrate differences in wake time across sexes, highlighting any potential gender differences in sleep patterns, such that on average males have a higher wake time than women. 
+A boxplot can illustrate differences in wake time across sexes, highlighting any potential gender differences in sleep patterns, such that on average males have a higher wake time than women.
 
 ```{r}
 ggplot(dataset, aes(x = Average_HR, y = Average_SpO2, color = Age)) + 
@@ -264,12 +263,12 @@ ggplot(dataset, aes(x = Average_HR, y = Average_SpO2, color = Age)) +
   labs(title = "Average HR vs. Average SpO2, Colored by Age", x = "Average Heart Rate (bpm)", y = "Average SpO2 (%)") + 
   theme_minimal()
 ```
-This scatter plot can help visualize the relationship between average heart rate and average SpO2, with points colored by age to see if there's any age-related pattern, which as we can see the color gets slightly brighter the lower we get on both average hr and average spO2. 
 
+This scatter plot can help visualize the relationship between average heart rate and average SpO2, with points colored by age to see if there's any age-related pattern, which as we can see the color gets slightly brighter the lower we get on both average hr and average spO2.
 
 ## Model Building
 
-The statistical model we intend to develop, \(\hat{W_{i}} = \alpha + \beta \times Age_{i} + \epsilon_{i}\), where \(\hat{W_{i}}\) symbolizes the predicted wake times for the \(i^{th}\) individual, and \(Age_{i}\) represents the age of the individual, aims to shed light on the relationship between age and wake times. By quantifying the trend across different ages, this linear regression model acts as a foundational tool for investigating potential significant changes in wake times across the lifespan. Such changes, if detected, could indicate underlying physiological, psychological, or lifestyle shifts associated with aging. This model's ability to highlight deviations from expected patterns provides a quantitative basis for further exploration into the factors influencing sleep patterns and the potential impact of age on sleep quality and duration.
+The statistical model we intend to develop, $\hat{W_{i}} = \alpha + \beta \times Age_{i} + \epsilon_{i}$, where $\hat{W_{i}}$ symbolizes the predicted wake times for the $i^{th}$ individual, and $Age_{i}$ represents the age of the individual, aims to shed light on the relationship between age and wake times. By quantifying the trend across different ages, this linear regression model acts as a foundational tool for investigating potential significant changes in wake times across the lifespan. Such changes, if detected, could indicate underlying physiological, psychological, or lifestyle shifts associated with aging. This model's ability to highlight deviations from expected patterns provides a quantitative basis for further exploration into the factors influencing sleep patterns and the potential impact of age on sleep quality and duration.
 
 ```{r}
 model <- lm(W ~ Age, data = dataset)
@@ -282,29 +281,28 @@ The linear regression equation representing the model is $\hat{W_{i}} = 11.884 +
 ggplot(dataset, aes(x = Age, y = W)) + 
   geom_point() + 
   geom_smooth(method = "lm", se=FALSE,color = "#ff7700") + 
-  labs(title = "Wake Time vs. Age", x = "Age", y = "Wake Time (minutes)")
+  labs(title = "Wake Time vs. Age", x = "Age", y = "Wake Time (epochs)")
 ```
 
 This scatter plot, complemented by a linear regression line, explores the relationship between wake time and age. Points represent individual subjects, plotting their wake time against their age. The linear regression line (smoothed line) provides a visual estimate of the trend, showing whether wake time tends to increases as age progresses.
-
 
 Importantly, to ensure the integrity of the conclusions drawn from this model, we will verify the assumptions underlying linear regression analysis, including linearity, independence of errors, homoscedasticity (constant variance of errors), and normality of error terms. These checks are fundamental to confirming that our model is accurately specified and that the inferences and predictions derived from it are reliable.
 
 ## Model Assumption and Validation
 
 ***Correlation Coefficient Check***:
+
 ```{r}
 cor(dataset$W, dataset$Age)
 ```
 
-A correlation coefficient of 0.5353568 indicates a  positive linear relationship between the age and amount of time spent awake during sleep.
+A correlation coefficient of 0.5353568 indicates a positive linear relationship between the age and amount of time spent awake during sleep.
 
 ***Significance of Coefficient Estimates***
 
-In the context of examining the importance of the coefficient estimate for age in predicting wake times, we can define the null hypothesis (\(H_0\)) and the alternative hypothesis (\(H_1\)) as follows, with a significance level (\(\alpha\)) of 0.05:
+In the context of examining the importance of the coefficient estimate for age in predicting wake times, we can define the null hypothesis ($H_0$) and the alternative hypothesis ($H_1$) as follows, with a significance level ($\alpha$) of 0.05:
 
 Null hypothesis: $H_{0}: \beta_{1} = 0$, $H_{0}: \beta_{0} = 0$
-
 
 Alternative hypothesis: $H_{A}: \beta_{1} \neq 0$, $H_{A}: \beta_{0} \neq 0$
 
@@ -315,18 +313,21 @@ coef(summary(model))[, "Pr(>|t|)"]
 ```
 
 ### Intercept
-- **t-value for Intercept**: 0.3721653
-- **p-value for Intercept**: 0.7108783
 
-The intercept's t-value is not significantly far from zero, and the corresponding p-value is much greater than the alpha level of 0.05. This result suggests that the intercept is not statistically significantly different from zero at the conventional significance levels. Therefore, we fail to reject the null hypothesis \(H_0: \alpha_{0} = 0\) in favor of the alternative hypothesis \(H_1: \alpha_{0} \neq 0\).
+-   **t-value for Intercept**: 0.3721653
+-   **p-value for Intercept**: 0.7108783
+
+The intercept's t-value is not significantly far from zero, and the corresponding p-value is much greater than the alpha level of 0.05. This result suggests that the intercept is not statistically significantly different from zero at the conventional significance levels. Therefore, we fail to reject the null hypothesis $H_0: \alpha_{0} = 0$ in favor of the alternative hypothesis $H_1: \alpha_{0} \neq 0$.
 
 ### Age
-- **t-value for Age**: 5.3408207
-- **p-value for Age**: 0.000001060644
 
-The t-value for the age coefficient is significantly positive, indicating a positive relationship between age and wake times in the dataset analyzed. The p-value associated with this t-value is much less than 0.05, strongly suggesting that we reject the null hypothesis \(H_0: \beta_{1} = 0\) in favor of the alternative hypothesis \(H_1: \beta_{1} \neq 0\).
+-   **t-value for Age**: 5.3408207
+-   **p-value for Age**: 0.000001060644
+
+The t-value for the age coefficient is significantly positive, indicating a positive relationship between age and wake times in the dataset analyzed. The p-value associated with this t-value is much less than 0.05, strongly suggesting that we reject the null hypothesis $H_0: \beta_{1} = 0$ in favor of the alternative hypothesis $H_1: \beta_{1} \neq 0$.
 
 ### Implications
+
 The statistical analysis of the age coefficient reveals that there is a significant linear relationship between age and wake times. This means that age significantly predicts wake times, with the positive t-value indicating that as age increases, so does the wake time, suggesting an association between older age and longer wake times.
 
 Given the alpha level of 0.05 and the very low p-value obtained for the age coefficient, our analysis provides strong statistical evidence to support the conclusion that age is a significant predictor of wake times. The intercept not being significantly different from zero suggests that the baseline wake time (at age zero, hypothetically speaking) is not statistically distinguishable from zero in this model's context.
@@ -336,6 +337,7 @@ The R-squared value of 0.2766 in our linear regression model, derived from real-
 **Residual Analysis**
 
 ### Normality of Residuals
+
 In our specific analysis concerning wake time as a function of age, the normality of residuals implies that the deviations from the predicted wake times are random and follow a normal distribution. This condition supports the premise that our linear model is appropriately capturing the relationship between age and wake time without systematic bias.
 
 The evidence supporting the normality of residuals in our analysis comes from both graphical and statistical methods:
@@ -352,7 +354,7 @@ ggplot(residuals_df, aes(sample = Residuals)) +
   theme_minimal()
 ```
 
-In our case, the residuals deviate slightly with the reference line in the Q-Q plot, indicating that their distribution  might not be a normal distribution. This evidence suggests that the residuals from our linear model do not deviate significantly from normality but to be certain we can perform a Shapiro Wilks test with an alpha of 0.01.
+In our case, the residuals deviate slightly with the reference line in the Q-Q plot, indicating that their distribution might not be a normal distribution. This evidence suggests that the residuals from our linear model do not deviate significantly from normality but to be certain we can perform a Shapiro Wilks test with an alpha of 0.01.
 
 ```{r}
 shapiro.test(residuals)
@@ -388,4 +390,5 @@ The even distribution of residuals across the predicted values, as evidenced by 
 Given that our analysis has confirmed both key assumptions of linear regression—normality of residuals and homoscedasticity—we can assert that our linear regression model is valid. This validity implies that the model is well-founded and that the statistical inferences drawn from it, such as confidence intervals and hypothesis tests on the regression coefficients, are based on solid assumptions.
 
 ## Refrences
+
 Khalighi Sirvan, Teresa Sousa, José Moutinho Santos, and Urbano Nunes. “ISRUC-Sleep: A comprehensive public dataset for sleep researchers.“Computer methods and programs in biomedicine 124 (2016): 180-192.

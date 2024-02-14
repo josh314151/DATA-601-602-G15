@@ -97,7 +97,7 @@
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\usepackage{bookmark}
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
@@ -113,9 +113,11 @@
 \begin{document}
 \maketitle
 
-\section{Part 1}\label{part-1}
+\hypertarget{part-1}{%
+\section{Part 1}\label{part-1}}
 
-\subsection{Data Wrangling}\label{data-wrangling}
+\hypertarget{data-wrangling}{%
+\subsection{Data Wrangling}\label{data-wrangling}}
 
 In the initial phase of our project, the primary goal is to prepare the
 dataset for analysis. This preparation involves loading the data and
@@ -132,7 +134,7 @@ trends we aim to analyze.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{bonds\_data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"/Users/rs/MDataSci/data601/project/bondsdata.csv"}\NormalTok{)}
+\NormalTok{bonds\_data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"bondsdata.csv"}\NormalTok{)}
 \NormalTok{bonds\_data\_filtered }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(bonds\_data, season }\SpecialCharTok{!=} \DecValTok{2001}\NormalTok{)}
 \FunctionTok{tail}\NormalTok{(bonds\_data\_filtered)}
 \end{Highlighting}
@@ -158,7 +160,8 @@ performance trajectory, allowing us to assess whether there is evidence
 of an unusual improvement that could be attributed to external factors,
 such as the speculated use of steroids.
 
-\subsection{Model Building}\label{model-building}
+\hypertarget{model-building}{%
+\subsection{Model Building}\label{model-building}}
 
 The statistical model we plan to build,
 \(HRAT_{i} = A + B \times Year_{i} + e_{i}\), where \(HRAT_{i}\)
@@ -187,10 +190,11 @@ The linear regression equation representing the model is
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(bonds\_data\_filtered, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ season, }\AttributeTok{y =}\NormalTok{ hrat)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
-    \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#00bbff"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Barry Bonds HR/AB vs. Season"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Season"}\NormalTok{,}
-        \AttributeTok{y =} \StringTok{"HR/AB"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\FunctionTok{ggplot}\NormalTok{(bonds\_data\_filtered, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ season, }\AttributeTok{y =}\NormalTok{ hrat)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#00bbff"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Barry Bonds HR/AB vs. Season"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Season"}\NormalTok{, }\AttributeTok{y =} \StringTok{"HR/AB"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -204,8 +208,9 @@ checks are fundamental to confirming that our model is accurately
 specified and that the inferences and predictions derived from it are
 reliable.
 
+\hypertarget{model-assumption-and-validation}{%
 \subsection{Model Assumption and
-Validation}\label{model-assumption-and-validation}
+Validation}\label{model-assumption-and-validation}}
 
 \textbf{\emph{Correlation Coefficient Check}}:
 
@@ -285,7 +290,8 @@ Alternative hypothesis: \(H_{A}: \beta_{1} \neq 0\),
 ## 0.0006664296 0.0006222474
 \end{verbatim}
 
-\subsubsection{Intercept}\label{intercept}
+\hypertarget{intercept}{%
+\subsubsection{Intercept}\label{intercept}}
 
 \begin{itemize}
 \tightlist
@@ -302,7 +308,8 @@ different from zero. Therefore we reject the null hypothesis
 \(H_0: B_{0} = 0\) in favor of the alternative hypothesis
 \(H_1: B_{0} \neq 0\)\$.
 
-\subsubsection{Season}\label{season}
+\hypertarget{season}{%
+\subsubsection{Season}\label{season}}
 
 \begin{itemize}
 \tightlist
@@ -319,7 +326,8 @@ t-value is much less than 0.05, strongly suggesting that we reject the
 null hypothesis \(H_0: B_{1} = 0\) in favor of the alternative
 hypothesis \(H_1: B_{1} \neq 0\).
 
-\subsubsection{Implications}\label{implications}
+\hypertarget{implications}{%
+\subsubsection{Implications}\label{implications}}
 
 The statistical analysis of the year's coefficient reveals that there is
 a significant linear relationship between the year and the HR/AB ratio.
@@ -341,7 +349,8 @@ explained by the independent variable.
 
 \textbf{Residual Analysis}
 
-\subsubsection{Normality of Residuals}\label{normality-of-residuals}
+\hypertarget{normality-of-residuals}{%
+\subsubsection{Normality of Residuals}\label{normality-of-residuals}}
 
 In our specific analysis concerning Barry Bonds' home run rates (HR/AB)
 as a function of the season (year), the normality of residuals implies
@@ -359,8 +368,11 @@ from both graphical and statistical methods:
 \NormalTok{residuals\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Residuals =}\NormalTok{ residuals)}
 
 \CommentTok{\# Generate a Q{-}Q plot}
-\FunctionTok{ggplot}\NormalTok{(residuals\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{sample =}\NormalTok{ Residuals)) }\SpecialCharTok{+} \FunctionTok{stat\_qq}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{stat\_qq\_line}\NormalTok{(}\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Q{-}Q Plot of Residuals"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\FunctionTok{ggplot}\NormalTok{(residuals\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{sample =}\NormalTok{ Residuals)) }\SpecialCharTok{+}
+  \FunctionTok{stat\_qq}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{stat\_qq\_line}\NormalTok{(}\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Q{-}Q Plot of Residuals"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -393,7 +405,8 @@ to reject the null hypothesis that the residuals are normally
 distributed. This statistical evidence further substantiates the claim
 that the residuals of our model are normal.
 
-\subsubsection{Homoscedasticity}\label{homoscedasticity}
+\hypertarget{homoscedasticity}{%
+\subsubsection{Homoscedasticity}\label{homoscedasticity}}
 
 The examination of homoscedasticity is a critical step in validating the
 assumptions underlying a linear regression model. Homoscedasticity
@@ -410,9 +423,12 @@ home run rates (HR/AB).
 \NormalTok{homoscedasticity\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Fitted =}\NormalTok{ fitted\_values, }\AttributeTok{Residuals =}\NormalTok{ residuals)}
 
 \FunctionTok{ggplot}\NormalTok{(homoscedasticity\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Fitted, }\AttributeTok{y =}\NormalTok{ Residuals)) }\SpecialCharTok{+}
-    \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Residuals vs. Fitted Values"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{xlab}\NormalTok{(}\StringTok{"Fitted Values"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{ylab}\NormalTok{(}\StringTok{"Residuals"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Residuals vs. Fitted Values"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"Fitted Values"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\StringTok{"Residuals"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -455,13 +471,14 @@ the model is well-founded and that the statistical inferences drawn from
 it, such as confidence intervals and hypothesis tests on the regression
 coefficients, are based on solid assumptions.
 
+\hypertarget{prediction-of-home-run-rate-in-2001-season}{%
 \subsection{Prediction of Home Run Rate in 2001
-Season}\label{prediction-of-home-run-rate-in-2001-season}
+Season}\label{prediction-of-home-run-rate-in-2001-season}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{new\_data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{season =} \DecValTok{2001}\NormalTok{)}
-\NormalTok{predicted\_hrab }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ new\_data, }\AttributeTok{interval =} \StringTok{"predict"}\NormalTok{)}
+\NormalTok{predicted\_hrab }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ new\_data, }\AttributeTok{interval=}\StringTok{"predict"}\NormalTok{)}
 \FunctionTok{print}\NormalTok{(predicted\_hrab)}
 \end{Highlighting}
 \end{Shaded}
@@ -502,9 +519,11 @@ However, our analysis does underscore the exceptional nature of Bonds'
 
 \newpage
 
-\section{Part II}\label{part-ii}
+\hypertarget{part-ii}{%
+\section{Part II}\label{part-ii}}
 
-\subsection{Introduction}\label{introduction}
+\hypertarget{introduction}{%
+\subsection{Introduction}\label{introduction}}
 
 The ISRUC-Sleep dataset is a resource for researchers interested in the
 field of sleep studies. This polysomnographic (PSG) dataset was compiled
@@ -514,7 +533,8 @@ disorders, and the effects of medication on sleep. Comprising data from
 with sleep disorders, the dataset is structured to support various
 research objectives and methodologies.
 
-\subsubsection{Dataset Overview}\label{dataset-overview}
+\hypertarget{dataset-overview}{%
+\subsubsection{Dataset Overview}\label{dataset-overview}}
 
 The dataset is organized into three main groups, each tailored to
 address different research needs:
@@ -540,8 +560,9 @@ address different research needs:
   heart rate, blood-oxygen saturation).
 \end{enumerate}
 
+\hypertarget{motivations-for-researching-sleep}{%
 \subsubsection{Motivations for Researching
-Sleep}\label{motivations-for-researching-sleep}
+Sleep}\label{motivations-for-researching-sleep}}
 
 Researching sleep is crucial for several reasons, reflecting the central
 role of sleep in human health and well-being:
@@ -570,17 +591,16 @@ world.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{summary\_data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"/Users/rs/MDataSci/data601/project/summary\_data.csv"}\NormalTok{)}
-\NormalTok{summary\_data\_three }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"/Users/rs/MDataSci/data601/project/summary\_data\_subgroup\_3.csv"}\NormalTok{)}
-\NormalTok{sleep\_stage\_output }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"/Users/rs/MDataSci/data601/project/sleep\_stage\_output.csv"}\NormalTok{)}
+\NormalTok{summary\_data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"summary\_data.csv"}\NormalTok{)}
+\NormalTok{sleep\_stage\_output }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"sleep\_stage\_output.csv"}\NormalTok{)}
 
 \NormalTok{dataset }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(summary\_data, sleep\_stage\_output)}
 \NormalTok{dataset }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(dataset)}
 
 
 \NormalTok{dataset }\OtherTok{\textless{}{-}}\NormalTok{ dataset }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{filter}\NormalTok{(Age }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, W }\SpecialCharTok{\textless{}} \DecValTok{400}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{filter}\NormalTok{(Sex }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Male"}\NormalTok{, }\StringTok{"Female"}\NormalTok{))}
+  \FunctionTok{filter}\NormalTok{(Age }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, W }\SpecialCharTok{\textless{}} \DecValTok{400}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Sex }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Male"}\NormalTok{, }\StringTok{"Female"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -649,7 +669,8 @@ world.
 ##  NA's   :65      NA's   :72
 \end{verbatim}
 
-\subsection{TALK ABOUT SUMMARY STATS}\label{talk-about-summary-stats}
+\hypertarget{talk-about-summary-stats}{%
+\subsection{TALK ABOUT SUMMARY STATS}\label{talk-about-summary-stats}}
 
 For a more comprehensive exploration of the ISRUC-Sleep dataset, let's
 delve into additional visualizations that can illuminate various aspects
@@ -660,14 +681,12 @@ demographic factors like age.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{physiological\_data }\OtherTok{\textless{}{-}}\NormalTok{ dataset[, }\FunctionTok{c}\NormalTok{(}\StringTok{"Average\_SpO2"}\NormalTok{, }\StringTok{"Average\_HR"}\NormalTok{,}
-    \StringTok{"Min\_SpO2"}\NormalTok{, }\StringTok{"Min\_HR"}\NormalTok{, }\StringTok{"Max\_SpO2"}\NormalTok{, }\StringTok{"Max\_HR"}\NormalTok{, }\StringTok{"W"}\NormalTok{, }\StringTok{"N3"}\NormalTok{, }\StringTok{"N2"}\NormalTok{,}
-    \StringTok{"R"}\NormalTok{, }\StringTok{"N1"}\NormalTok{)]}
+\NormalTok{physiological\_data }\OtherTok{\textless{}{-}}\NormalTok{ dataset[, }\FunctionTok{c}\NormalTok{(}\StringTok{"Average\_SpO2"}\NormalTok{, }\StringTok{"Average\_HR"}\NormalTok{, }\StringTok{"Min\_SpO2"}\NormalTok{, }\StringTok{"Min\_HR"}\NormalTok{, }\StringTok{"Max\_SpO2"}\NormalTok{, }\StringTok{"Max\_HR"}\NormalTok{, }\StringTok{"W"}\NormalTok{, }\StringTok{"N3"}\NormalTok{,}\StringTok{"N2"}\NormalTok{,}\StringTok{"R"}\NormalTok{,}\StringTok{"N1"}\NormalTok{)]}
 \NormalTok{cor\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(physiological\_data, }\AttributeTok{use =} \StringTok{"complete.obs"}\NormalTok{)}
 
 \FunctionTok{corrplot}\NormalTok{(cor\_matrix, }\AttributeTok{method =} \StringTok{"color"}\NormalTok{, }\AttributeTok{type =} \StringTok{"upper"}\NormalTok{, }\AttributeTok{order =} \StringTok{"hclust"}\NormalTok{,}
-    \AttributeTok{tl.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{addCoef.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{,}
-        \DecValTok{0}\NormalTok{), }\AttributeTok{title =} \StringTok{"Correlation of Physiological Measures"}\NormalTok{)}
+         \AttributeTok{tl.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{mar=}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{0}\NormalTok{),}
+         \AttributeTok{title =} \StringTok{"Correlation of Physiological Measures"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -681,10 +700,11 @@ physiological factors.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age)) }\SpecialCharTok{+} \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth =} \DecValTok{5}\NormalTok{,}
-    \AttributeTok{fill =} \StringTok{"cornflowerblue"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sex) }\SpecialCharTok{+}
-    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Age Distribution by Sex"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Age"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Count"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{theme\_minimal}\NormalTok{()}
+\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth =} \DecValTok{5}\NormalTok{, }\AttributeTok{fill =} \StringTok{"cornflowerblue"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sex) }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Age Distribution by Sex"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Age"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Count"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -692,23 +712,14 @@ physiological factors.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ W)) }\SpecialCharTok{+} \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth =} \DecValTok{10}\NormalTok{, }\AttributeTok{fill =} \StringTok{"\#ff9100"}\NormalTok{,}
-    \AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sex)}
+\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ W)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth =} \DecValTok{10}\NormalTok{, }\AttributeTok{fill =} \StringTok{"\#ff9100"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sex) }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Distribution of Wake Time"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Wake Time (epochs)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Frequency"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{602_project_files/figure-latex/unnamed-chunk-15-2.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Distribution of Wake Time"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Wake Time (minutes)"}\NormalTok{,}
-    \AttributeTok{y =} \StringTok{"Frequency"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## NULL
-\end{verbatim}
 
 These plots show the distribution of ages and wake times within the
 dataset, separated by sex, concluding that there are more older males
@@ -716,9 +727,11 @@ than there are women.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Sex, }\AttributeTok{y =}\NormalTok{ W, }\AttributeTok{fill =}\NormalTok{ Sex)) }\SpecialCharTok{+} \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
-    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Wake Time by Sex"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Sex"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Wake Time (minutes)"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Set2"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Sex, }\AttributeTok{y =}\NormalTok{ W, }\AttributeTok{fill =}\NormalTok{ Sex)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Wake Time by Sex"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Sex"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Wake Time (epochs)"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Set2"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -730,21 +743,23 @@ that on average males have a higher wake time than women.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Average\_HR, }\AttributeTok{y =}\NormalTok{ Average\_SpO2, }\AttributeTok{color =}\NormalTok{ Age)) }\SpecialCharTok{+}
-    \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{scale\_color\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"blue"}\NormalTok{,}
-    \AttributeTok{high =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Average HR vs. Average SpO2, Colored by Age"}\NormalTok{,}
-    \AttributeTok{x =} \StringTok{"Average Heart Rate (bpm)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Average SpO2 (\%)"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{theme\_minimal}\NormalTok{()}
+\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Average\_HR, }\AttributeTok{y =}\NormalTok{ Average\_SpO2, }\AttributeTok{color =}\NormalTok{ Age)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{scale\_color\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{high =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Average HR vs. Average SpO2, Colored by Age"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Average Heart Rate (bpm)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Average SpO2 (\%)"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{602_project_files/figure-latex/unnamed-chunk-17-1.pdf}
+
 This scatter plot can help visualize the relationship between average
 heart rate and average SpO2, with points colored by age to see if
 there's any age-related pattern, which as we can see the color gets
 slightly brighter the lower we get on both average hr and average spO2.
 
-\subsection{Model Building}\label{model-building-1}
+\hypertarget{model-building-1}{%
+\subsection{Model Building}\label{model-building-1}}
 
 The statistical model we intend to develop,
 \(\hat{W_{i}} = \alpha + \beta \times Age_{i} + \epsilon_{i}\), where
@@ -777,9 +792,10 @@ The linear regression equation representing the model is
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ W)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{,}
-    \AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#ff7700"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Wake Time vs. Age"}\NormalTok{,}
-    \AttributeTok{x =} \StringTok{"Age"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Wake Time (minutes)"}\NormalTok{)}
+\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ W)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} 
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se=}\ConstantTok{FALSE}\NormalTok{,}\AttributeTok{color =} \StringTok{"\#ff7700"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Wake Time vs. Age"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Age"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Wake Time (epochs)"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -799,8 +815,9 @@ checks are fundamental to confirming that our model is accurately
 specified and that the inferences and predictions derived from it are
 reliable.
 
+\hypertarget{model-assumption-and-validation-1}{%
 \subsection{Model Assumption and
-Validation}\label{model-assumption-and-validation-1}
+Validation}\label{model-assumption-and-validation-1}}
 
 \textbf{\emph{Correlation Coefficient Check}}:
 
@@ -879,7 +896,8 @@ Alternative hypothesis: \(H_{A}: \beta_{1} \neq 0\),
 ## 7.108783e-01 1.060644e-06
 \end{verbatim}
 
-\subsubsection{Intercept}\label{intercept-1}
+\hypertarget{intercept-1}{%
+\subsubsection{Intercept}\label{intercept-1}}
 
 \begin{itemize}
 \tightlist
@@ -896,7 +914,8 @@ different from zero at the conventional significance levels. Therefore,
 we fail to reject the null hypothesis \(H_0: \alpha_{0} = 0\) in favor
 of the alternative hypothesis \(H_1: \alpha_{0} \neq 0\).
 
-\subsubsection{Age}\label{age}
+\hypertarget{age}{%
+\subsubsection{Age}\label{age}}
 
 \begin{itemize}
 \tightlist
@@ -913,7 +932,8 @@ than 0.05, strongly suggesting that we reject the null hypothesis
 \(H_0: \beta_{1} = 0\) in favor of the alternative hypothesis
 \(H_1: \beta_{1} \neq 0\).
 
-\subsubsection{Implications}\label{implications-1}
+\hypertarget{implications-1}{%
+\subsubsection{Implications}\label{implications-1}}
 
 The statistical analysis of the age coefficient reveals that there is a
 significant linear relationship between age and wake times. This means
@@ -942,7 +962,8 @@ portion of the variance remains unexplained by this model alone.
 
 \textbf{Residual Analysis}
 
-\subsubsection{Normality of Residuals}\label{normality-of-residuals-1}
+\hypertarget{normality-of-residuals-1}{%
+\subsubsection{Normality of Residuals}\label{normality-of-residuals-1}}
 
 In our specific analysis concerning wake time as a function of age, the
 normality of residuals implies that the deviations from the predicted
@@ -959,8 +980,11 @@ from both graphical and statistical methods:
 \NormalTok{residuals\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Residuals =}\NormalTok{ residuals)}
 
 \CommentTok{\# Generate a Q{-}Q plot}
-\FunctionTok{ggplot}\NormalTok{(residuals\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{sample =}\NormalTok{ Residuals)) }\SpecialCharTok{+} \FunctionTok{stat\_qq}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{stat\_qq\_line}\NormalTok{(}\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Q{-}Q Plot of Residuals"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\FunctionTok{ggplot}\NormalTok{(residuals\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{sample =}\NormalTok{ Residuals)) }\SpecialCharTok{+}
+  \FunctionTok{stat\_qq}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{stat\_qq\_line}\NormalTok{(}\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Q{-}Q Plot of Residuals"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -996,7 +1020,8 @@ that our statistical model's underlying assumptions are met, enhancing
 the reliability of the conclusions drawn from it in the context of
 real-world data variability.
 
-\subsubsection{Homoscedasticity}\label{homoscedasticity-1}
+\hypertarget{homoscedasticity-1}{%
+\subsubsection{Homoscedasticity}\label{homoscedasticity-1}}
 
 The examination of homoscedasticity is a critical step in validating the
 assumptions underlying a linear regression model. Homoscedasticity
@@ -1012,9 +1037,12 @@ variable.
 \NormalTok{homoscedasticity\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Fitted =}\NormalTok{ fitted\_values, }\AttributeTok{Residuals =}\NormalTok{ residuals)}
 
 \FunctionTok{ggplot}\NormalTok{(homoscedasticity\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Fitted, }\AttributeTok{y =}\NormalTok{ Residuals)) }\SpecialCharTok{+}
-    \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Residuals vs. Fitted Values"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{xlab}\NormalTok{(}\StringTok{"Fitted Values"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{ylab}\NormalTok{(}\StringTok{"Residuals"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Residuals vs. Fitted Values"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"Fitted Values"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\StringTok{"Residuals"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1056,7 +1084,8 @@ the model is well-founded and that the statistical inferences drawn from
 it, such as confidence intervals and hypothesis tests on the regression
 coefficients, are based on solid assumptions.
 
-\subsection{Refrences}\label{refrences}
+\hypertarget{refrences}{%
+\subsection{Refrences}\label{refrences}}
 
 Khalighi Sirvan, Teresa Sousa, José Moutinho Santos, and Urbano Nunes.
 ``ISRUC-Sleep: A comprehensive public dataset for sleep
