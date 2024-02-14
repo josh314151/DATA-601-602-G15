@@ -185,6 +185,15 @@ that such use would manifest as an atypical increase in home run rates.
 The linear regression equation representing the model is
 \(\hat{HRAT_{i}} = -7.992 + 0.004 \times Year_{i}\).
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(bonds\_data\_filtered, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ season, }\AttributeTok{y =}\NormalTok{ hrat)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
+    \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#00bbff"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Barry Bonds HR/AB vs. Season"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Season"}\NormalTok{,}
+        \AttributeTok{y =} \StringTok{"HR/AB"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
 \includegraphics{602_project_files/figure-latex/unnamed-chunk-4-1.pdf}
 
 Importantly, to ensure the integrity of the conclusions drawn from this
@@ -344,6 +353,17 @@ year and HR/AB without systematic bias.
 The evidence supporting the normality of residuals in our analysis comes
 from both graphical and statistical methods:
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{residuals }\OtherTok{\textless{}{-}} \FunctionTok{resid}\NormalTok{(model)}
+\NormalTok{residuals\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Residuals =}\NormalTok{ residuals)}
+
+\CommentTok{\# Generate a Q{-}Q plot}
+\FunctionTok{ggplot}\NormalTok{(residuals\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{sample =}\NormalTok{ Residuals)) }\SpecialCharTok{+} \FunctionTok{stat\_qq}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{stat\_qq\_line}\NormalTok{(}\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Q{-}Q Plot of Residuals"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
 \includegraphics{602_project_files/figure-latex/unnamed-chunk-7-1.pdf}
 
 In our case, the residuals align closely with the reference line in the
@@ -383,6 +403,18 @@ of the independent variable(s). This assumption ensures that the model's
 predictive accuracy is uniform across the range of the independent
 variable, which in this context is the season (year) for Barry Bonds'
 home run rates (HR/AB).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fitted\_values }\OtherTok{\textless{}{-}} \FunctionTok{fitted}\NormalTok{(model)}
+\NormalTok{homoscedasticity\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Fitted =}\NormalTok{ fitted\_values, }\AttributeTok{Residuals =}\NormalTok{ residuals)}
+
+\FunctionTok{ggplot}\NormalTok{(homoscedasticity\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Fitted, }\AttributeTok{y =}\NormalTok{ Residuals)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Residuals vs. Fitted Values"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{xlab}\NormalTok{(}\StringTok{"Fitted Values"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{ylab}\NormalTok{(}\StringTok{"Residuals"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
 
 \includegraphics{602_project_files/figure-latex/unnamed-chunk-9-1.pdf}
 
@@ -467,5 +499,568 @@ use of performance-enhancing substances. Such conclusions would require
 corroborative evidence beyond the scope of this statistical model.
 However, our analysis does underscore the exceptional nature of Bonds'
 2001 season within the context of his career performance trends.
+
+\newpage
+
+\section{Part II}\label{part-ii}
+
+\subsection{Introduction}\label{introduction}
+
+The ISRUC-Sleep dataset is a resource for researchers interested in the
+field of sleep studies. This polysomnographic (PSG) dataset was compiled
+to facilitate a wide range of investigations into sleep patterns,
+disorders, and the effects of medication on sleep. Comprising data from
+100 human adults, including both healthy subjects and those diagnosed
+with sleep disorders, the dataset is structured to support various
+research objectives and methodologies.
+
+\subsubsection{Dataset Overview}\label{dataset-overview}
+
+The dataset is organized into three main groups, each tailored to
+address different research needs:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{General Population Data}: It includes one recording session
+  per subject across 100 subjects, offering a broad overview of sleep
+  characteristics in a diverse population.The PSG recordings, associated
+  with each subject, were visually scored by two human experts. The PSG
+  recordings include electrophysiological signals, pneumological
+  signals, and another contextual information of the subjects.
+\item
+  \textbf{Healthy Subjects Data}: This subset focuses on 10 healthy
+  individuals, allowing for detailed comparisons between healthy sleep
+  patterns and those affected by sleep disorders.
+\item
+  \textbf{Sleep Stages and Events}: The data contains epoch-by-epoch
+  annotations of sleep stages (Awake, NREM stages N1, N2, N3, and REM)
+  based on the American Academy of Sleep Medicine (AASM) criteria, as
+  well as various sleep-related events and physiological signals (e.g.,
+  heart rate, blood-oxygen saturation).
+\end{enumerate}
+
+\subsubsection{Motivations for Researching
+Sleep}\label{motivations-for-researching-sleep}
+
+Researching sleep is crucial for several reasons, reflecting the central
+role of sleep in human health and well-being:
+
+\begin{itemize}
+\item
+  \textbf{Understanding Sleep Disorders}: With a wide prevalence of
+  sleep disorders across the global population, understanding the
+  nuances of these conditions is vital for developing effective
+  treatments. The ISRUC-Sleep dataset allows researchers to study the
+  specific patterns and anomalies associated with different disorders.
+\item
+  \textbf{Impact on Health}: Sleep has profound effects on physical
+  health, mental health, and cognitive function. Research can uncover
+  how variations in sleep patterns affect these areas, leading to
+  improved guidelines for healthy sleep and interventions for
+  sleep-related health issues.
+\end{itemize}
+
+In summary, the ISRUC-Sleep dataset is a foundational tool for advancing
+our understanding of sleep and its complex interplay with human health.
+It enables researchers to explore questions related to sleep physiology,
+disorders, treatment effects, and beyond, with the ultimate goal of
+enhancing sleep quality and health outcomes for individuals around the
+world.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{summary\_data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"/Users/rs/MDataSci/data601/project/summary\_data.csv"}\NormalTok{)}
+\NormalTok{summary\_data\_three }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"/Users/rs/MDataSci/data601/project/summary\_data\_subgroup\_3.csv"}\NormalTok{)}
+\NormalTok{sleep\_stage\_output }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"/Users/rs/MDataSci/data601/project/sleep\_stage\_output.csv"}\NormalTok{)}
+
+\NormalTok{dataset }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(summary\_data, sleep\_stage\_output)}
+\NormalTok{dataset }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(dataset)}
+
+
+\NormalTok{dataset }\OtherTok{\textless{}{-}}\NormalTok{ dataset }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{filter}\NormalTok{(Age }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, W }\SpecialCharTok{\textless{}} \DecValTok{400}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{filter}\NormalTok{(Sex }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Male"}\NormalTok{, }\StringTok{"Female"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(dataset)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        ID             Expert      Date             Height_in      Height_cm    
+##  Min.   :  1.00   Min.   :1   Length:73          Min.   :40.0   Min.   :101.0  
+##  1st Qu.: 28.00   1st Qu.:1   Class :character   1st Qu.:63.0   1st Qu.:160.0  
+##  Median : 52.00   Median :1   Mode  :character   Median :66.0   Median :167.0  
+##  Mean   : 51.45   Mean   :1                      Mean   :65.4   Mean   :166.1  
+##  3rd Qu.: 77.00   3rd Qu.:1                      3rd Qu.:69.0   3rd Qu.:174.0  
+##  Max.   :100.00   Max.   :1                      Max.   :77.0   Max.   :195.0  
+##                                                                                
+##    Weight_lbs      Weight_kg           Age            Sex           
+##  Min.   :  0.0   Min.   : 53.00   Min.   :20.00   Length:73         
+##  1st Qu.:161.0   1st Qu.: 73.00   1st Qu.:37.00   Class :character  
+##  Median :176.0   Median : 80.00   Median :50.00   Mode  :character  
+##  Mean   :175.8   Mean   : 80.90   Mean   :49.23                     
+##  3rd Qu.:196.0   3rd Qu.: 89.25   3rd Qu.:61.00                     
+##  Max.   :254.0   Max.   :115.00   Max.   :85.00                     
+##                  NA's   :1                                          
+##   Total_Epoch        Min_SpO2         Min_HR         Max_SpO2     
+##  Min.   : 341.0   Min.   : 8.00   Min.   :24.00   Min.   : 94.00  
+##  1st Qu.: 809.0   1st Qu.:59.00   1st Qu.:47.00   1st Qu.: 97.00  
+##  Median : 872.0   Median :84.00   Median :57.00   Median : 98.00  
+##  Mean   : 848.2   Mean   :69.23   Mean   :54.21   Mean   : 97.92  
+##  3rd Qu.: 897.0   3rd Qu.:88.00   3rd Qu.:62.00   3rd Qu.: 99.00  
+##  Max.   :1032.0   Max.   :97.00   Max.   :74.00   Max.   :100.00  
+##                                                                   
+##      Max_HR       Average_SpO2     Average_HR    BPOS_Summary      
+##  Min.   : 76.0   Min.   :86.76   Min.   :47.38   Length:73         
+##  1st Qu.: 97.0   1st Qu.:93.28   1st Qu.:61.13   Class :character  
+##  Median :107.0   Median :94.84   Median :67.86   Mode  :character  
+##  Mean   :126.9   Mean   :94.43   Mean   :68.82                     
+##  3rd Qu.:125.0   3rd Qu.:95.86   3rd Qu.:76.29                     
+##  Max.   :255.0   Max.   :99.30   Max.   :94.03                     
+##                                                                    
+##  Stage_Summary      Events_Summary       Row.Index           W        
+##  Length:73          Length:73          Min.   :  0.0   Min.   :  5.0  
+##  Class :character   Class :character   1st Qu.: 54.0   1st Qu.: 95.0  
+##  Mode  :character   Mode  :character   Median :102.0   Median :149.0  
+##                                        Mean   :100.9   Mean   :166.9  
+##                                        3rd Qu.:152.0   3rd Qu.:233.0  
+##                                        Max.   :198.0   Max.   :382.0  
+##                                                                       
+##        N3              N2              R             N1            n2     
+##  Min.   : 42.0   Min.   :139.0   Min.   :  8   Min.   : 11   Min.   : NA  
+##  1st Qu.:134.0   1st Qu.:208.0   1st Qu.: 84   1st Qu.: 74   1st Qu.: NA  
+##  Median :171.0   Median :278.0   Median :121   Median :102   Median : NA  
+##  Mean   :177.4   Mean   :276.4   Mean   :120   Mean   :107   Mean   :NaN  
+##  3rd Qu.:205.0   3rd Qu.:338.0   3rd Qu.:139   3rd Qu.:137   3rd Qu.: NA  
+##  Max.   :417.0   Max.   :432.0   Max.   :330   Max.   :245   Max.   : NA  
+##                                                              NA's   :73   
+##        U               N     
+##  Min.   :1.000   Min.   :2   
+##  1st Qu.:1.000   1st Qu.:2   
+##  Median :5.000   Median :2   
+##  Mean   :4.625   Mean   :2   
+##  3rd Qu.:7.250   3rd Qu.:2   
+##  Max.   :9.000   Max.   :2   
+##  NA's   :65      NA's   :72
+\end{verbatim}
+
+\subsection{TALK ABOUT SUMMARY STATS}\label{talk-about-summary-stats}
+
+For a more comprehensive exploration of the ISRUC-Sleep dataset, let's
+delve into additional visualizations that can illuminate various aspects
+of the data. These visualizations will help uncover patterns, trends,
+and correlations within the dataset, providing deeper insights into
+sleep behavior, physiological measures, and their interactions with
+demographic factors like age.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{physiological\_data }\OtherTok{\textless{}{-}}\NormalTok{ dataset[, }\FunctionTok{c}\NormalTok{(}\StringTok{"Average\_SpO2"}\NormalTok{, }\StringTok{"Average\_HR"}\NormalTok{,}
+    \StringTok{"Min\_SpO2"}\NormalTok{, }\StringTok{"Min\_HR"}\NormalTok{, }\StringTok{"Max\_SpO2"}\NormalTok{, }\StringTok{"Max\_HR"}\NormalTok{, }\StringTok{"W"}\NormalTok{, }\StringTok{"N3"}\NormalTok{, }\StringTok{"N2"}\NormalTok{,}
+    \StringTok{"R"}\NormalTok{, }\StringTok{"N1"}\NormalTok{)]}
+\NormalTok{cor\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(physiological\_data, }\AttributeTok{use =} \StringTok{"complete.obs"}\NormalTok{)}
+
+\FunctionTok{corrplot}\NormalTok{(cor\_matrix, }\AttributeTok{method =} \StringTok{"color"}\NormalTok{, }\AttributeTok{type =} \StringTok{"upper"}\NormalTok{, }\AttributeTok{order =} \StringTok{"hclust"}\NormalTok{,}
+    \AttributeTok{tl.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{addCoef.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{,}
+        \DecValTok{0}\NormalTok{), }\AttributeTok{title =} \StringTok{"Correlation of Physiological Measures"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{602_project_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+A correlation matrix visualization can help identify relationships
+between continuous variables such as age, wake time, average heart rate
+(HR), and average blood-oxygen saturation (SpO2). We can see that there
+are song strong correlations based on the minimums of various
+physiological factors.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age)) }\SpecialCharTok{+} \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth =} \DecValTok{5}\NormalTok{,}
+    \AttributeTok{fill =} \StringTok{"cornflowerblue"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sex) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Age Distribution by Sex"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Age"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Count"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{602_project_files/figure-latex/unnamed-chunk-15-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ W)) }\SpecialCharTok{+} \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth =} \DecValTok{10}\NormalTok{, }\AttributeTok{fill =} \StringTok{"\#ff9100"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sex)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{602_project_files/figure-latex/unnamed-chunk-15-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Distribution of Wake Time"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Wake Time (minutes)"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Frequency"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## NULL
+\end{verbatim}
+
+These plots show the distribution of ages and wake times within the
+dataset, separated by sex, concluding that there are more older males
+than there are women.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Sex, }\AttributeTok{y =}\NormalTok{ W, }\AttributeTok{fill =}\NormalTok{ Sex)) }\SpecialCharTok{+} \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Wake Time by Sex"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Sex"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Wake Time (minutes)"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Set2"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{602_project_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+A boxplot can illustrate differences in wake time across sexes,
+highlighting any potential gender differences in sleep patterns, such
+that on average males have a higher wake time than women.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Average\_HR, }\AttributeTok{y =}\NormalTok{ Average\_SpO2, }\AttributeTok{color =}\NormalTok{ Age)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{scale\_color\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"blue"}\NormalTok{,}
+    \AttributeTok{high =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Average HR vs. Average SpO2, Colored by Age"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Average Heart Rate (bpm)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Average SpO2 (\%)"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{602_project_files/figure-latex/unnamed-chunk-17-1.pdf}
+This scatter plot can help visualize the relationship between average
+heart rate and average SpO2, with points colored by age to see if
+there's any age-related pattern, which as we can see the color gets
+slightly brighter the lower we get on both average hr and average spO2.
+
+\subsection{Model Building}\label{model-building-1}
+
+The statistical model we intend to develop,
+\(\hat{W_{i}} = \alpha + \beta \times Age_{i} + \epsilon_{i}\), where
+\(\hat{W_{i}}\) symbolizes the predicted wake times for the \(i^{th}\)
+individual, and \(Age_{i}\) represents the age of the individual, aims
+to shed light on the relationship between age and wake times. By
+quantifying the trend across different ages, this linear regression
+model acts as a foundational tool for investigating potential
+significant changes in wake times across the lifespan. Such changes, if
+detected, could indicate underlying physiological, psychological, or
+lifestyle shifts associated with aging. This model's ability to
+highlight deviations from expected patterns provides a quantitative
+basis for further exploration into the factors influencing sleep
+patterns and the potential impact of age on sleep quality and duration.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(W }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Age, }\AttributeTok{data =}\NormalTok{ dataset)}
+\NormalTok{model}\SpecialCharTok{$}\NormalTok{coef}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## (Intercept)         Age 
+##    11.36195     3.16015
+\end{verbatim}
+
+The linear regression equation representing the model is
+\(\hat{W_{i}} = 11.884 + 3.145*Age_{i}\)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Age, }\AttributeTok{y =}\NormalTok{ W)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{,}
+    \AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"\#ff7700"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Wake Time vs. Age"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Age"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Wake Time (minutes)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{602_project_files/figure-latex/unnamed-chunk-19-1.pdf}
+
+This scatter plot, complemented by a linear regression line, explores
+the relationship between wake time and age. Points represent individual
+subjects, plotting their wake time against their age. The linear
+regression line (smoothed line) provides a visual estimate of the trend,
+showing whether wake time tends to increases as age progresses.
+
+Importantly, to ensure the integrity of the conclusions drawn from this
+model, we will verify the assumptions underlying linear regression
+analysis, including linearity, independence of errors, homoscedasticity
+(constant variance of errors), and normality of error terms. These
+checks are fundamental to confirming that our model is accurately
+specified and that the inferences and predictions derived from it are
+reliable.
+
+\subsection{Model Assumption and
+Validation}\label{model-assumption-and-validation-1}
+
+\textbf{\emph{Correlation Coefficient Check}}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(dataset}\SpecialCharTok{$}\NormalTok{W, dataset}\SpecialCharTok{$}\NormalTok{Age)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.5353568
+\end{verbatim}
+
+A correlation coefficient of 0.5353568 indicates a positive linear
+relationship between the age and amount of time spent awake during
+sleep.
+
+\textbf{\emph{Significance of Coefficient Estimates}}
+
+In the context of examining the importance of the coefficient estimate
+for age in predicting wake times, we can define the null hypothesis
+(\(H_0\)) and the alternative hypothesis (\(H_1\)) as follows, with a
+significance level (\(\alpha\)) of 0.05:
+
+Null hypothesis: \(H_{0}: \beta_{1} = 0\), \(H_{0}: \beta_{0} = 0\)
+
+Alternative hypothesis: \(H_{A}: \beta_{1} \neq 0\),
+\(H_{A}: \beta_{0} \neq 0\)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = W ~ Age, data = dataset)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -159.29  -61.09  -20.61   48.59  194.31 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  11.3620    30.5293   0.372    0.711    
+## Age           3.1601     0.5917   5.341 1.06e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 78.04 on 71 degrees of freedom
+## Multiple R-squared:  0.2866, Adjusted R-squared:  0.2766 
+## F-statistic: 28.52 on 1 and 71 DF,  p-value: 1.061e-06
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{coef}\NormalTok{(}\FunctionTok{summary}\NormalTok{(model))[, }\StringTok{"t value"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## (Intercept)         Age 
+##   0.3721653   5.3408207
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{coef}\NormalTok{(}\FunctionTok{summary}\NormalTok{(model))[, }\StringTok{"Pr(\textgreater{}|t|)"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  (Intercept)          Age 
+## 7.108783e-01 1.060644e-06
+\end{verbatim}
+
+\subsubsection{Intercept}\label{intercept-1}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{t-value for Intercept}: 0.3721653
+\item
+  \textbf{p-value for Intercept}: 0.7108783
+\end{itemize}
+
+The intercept's t-value is not significantly far from zero, and the
+corresponding p-value is much greater than the alpha level of 0.05. This
+result suggests that the intercept is not statistically significantly
+different from zero at the conventional significance levels. Therefore,
+we fail to reject the null hypothesis \(H_0: \alpha_{0} = 0\) in favor
+of the alternative hypothesis \(H_1: \alpha_{0} \neq 0\).
+
+\subsubsection{Age}\label{age}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{t-value for Age}: 5.3408207
+\item
+  \textbf{p-value for Age}: 0.000001060644
+\end{itemize}
+
+The t-value for the age coefficient is significantly positive,
+indicating a positive relationship between age and wake times in the
+dataset analyzed. The p-value associated with this t-value is much less
+than 0.05, strongly suggesting that we reject the null hypothesis
+\(H_0: \beta_{1} = 0\) in favor of the alternative hypothesis
+\(H_1: \beta_{1} \neq 0\).
+
+\subsubsection{Implications}\label{implications-1}
+
+The statistical analysis of the age coefficient reveals that there is a
+significant linear relationship between age and wake times. This means
+that age significantly predicts wake times, with the positive t-value
+indicating that as age increases, so does the wake time, suggesting an
+association between older age and longer wake times.
+
+Given the alpha level of 0.05 and the very low p-value obtained for the
+age coefficient, our analysis provides strong statistical evidence to
+support the conclusion that age is a significant predictor of wake
+times. The intercept not being significantly different from zero
+suggests that the baseline wake time (at age zero, hypothetically
+speaking) is not statistically distinguishable from zero in this model's
+context.
+
+The R-squared value of 0.2766 in our linear regression model, derived
+from real-world data, indicates that approximately 27.66\% of the
+variance in the dependent variable (wake times) is explained by the
+independent variable (age). This figure, while lower than ideal
+theoretical models, is not uncommon in studies involving complex human
+behaviors and physiological responses, where multiple factors beyond age
+might influence the outcome. The value underscores the inherent
+complexity and variability in real-world datasets, highlighting that
+while age is a significant predictor of wake times, a substantial
+portion of the variance remains unexplained by this model alone.
+
+\textbf{Residual Analysis}
+
+\subsubsection{Normality of Residuals}\label{normality-of-residuals-1}
+
+In our specific analysis concerning wake time as a function of age, the
+normality of residuals implies that the deviations from the predicted
+wake times are random and follow a normal distribution. This condition
+supports the premise that our linear model is appropriately capturing
+the relationship between age and wake time without systematic bias.
+
+The evidence supporting the normality of residuals in our analysis comes
+from both graphical and statistical methods:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{residuals }\OtherTok{\textless{}{-}} \FunctionTok{resid}\NormalTok{(model)}
+\NormalTok{residuals\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Residuals =}\NormalTok{ residuals)}
+
+\CommentTok{\# Generate a Q{-}Q plot}
+\FunctionTok{ggplot}\NormalTok{(residuals\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{sample =}\NormalTok{ Residuals)) }\SpecialCharTok{+} \FunctionTok{stat\_qq}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{stat\_qq\_line}\NormalTok{(}\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Q{-}Q Plot of Residuals"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{602_project_files/figure-latex/unnamed-chunk-22-1.pdf}
+
+In our case, the residuals deviate slightly with the reference line in
+the Q-Q plot, indicating that their distribution might not be a normal
+distribution. This evidence suggests that the residuals from our linear
+model do not deviate significantly from normality but to be certain we
+can perform a Shapiro Wilks test with an alpha of 0.01.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{shapiro.test}\NormalTok{(residuals)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  residuals
+## W = 0.96323, p-value = 0.03179
+\end{verbatim}
+
+With a p-value of 0.03179 from the Shapiro-Wilk test and an alpha level
+of 0.01, we do not reject the null hypothesis that the data is normally
+distributed. The p-value is greater than the alpha level, indicating
+that there is not enough evidence to conclude the data deviates from
+normality at the 1\% significance level. This result supports the
+assumption of normality for the residuals in our analysis, suggesting
+that our statistical model's underlying assumptions are met, enhancing
+the reliability of the conclusions drawn from it in the context of
+real-world data variability.
+
+\subsubsection{Homoscedasticity}\label{homoscedasticity-1}
+
+The examination of homoscedasticity is a critical step in validating the
+assumptions underlying a linear regression model. Homoscedasticity
+refers to the condition where the residuals (the differences between
+observed and predicted values) have constant variance across all levels
+of the independent variable(s). This assumption ensures that the model's
+predictive accuracy is uniform across the range of the independent
+variable.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fitted\_values }\OtherTok{\textless{}{-}} \FunctionTok{fitted}\NormalTok{(model)}
+\NormalTok{homoscedasticity\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Fitted =}\NormalTok{ fitted\_values, }\AttributeTok{Residuals =}\NormalTok{ residuals)}
+
+\FunctionTok{ggplot}\NormalTok{(homoscedasticity\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Fitted, }\AttributeTok{y =}\NormalTok{ Residuals)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{colour =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Residuals vs. Fitted Values"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{xlab}\NormalTok{(}\StringTok{"Fitted Values"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{ylab}\NormalTok{(}\StringTok{"Residuals"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{602_project_files/figure-latex/unnamed-chunk-24-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{bptest}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  studentized Breusch-Pagan test
+## 
+## data:  model
+## BP = 0.83438, df = 1, p-value = 0.361
+\end{verbatim}
+
+The Breusch-Pagan (BP) test is a statistical procedure designed to test
+for heteroscedasticity --- the presence of non-constant variance in the
+error terms of a regression model. The BP test's p-value of 0.361
+significantly exceeds the common alpha level threshold of 0.05. This
+high p-value indicates that there is insufficient evidence to reject the
+null hypothesis of the BP test, which states that the error variances
+are homoscedastic.
+
+The even distribution of residuals across the predicted values, as
+evidenced by the scatter plot, allows us to conclude that the condition
+of homoscedasticity holds for our linear regression model. This finding
+is crucial because it means that our model meets another important
+assumption of linear regression, reinforcing its validity and the
+reliability of its predictions and inferences.
+
+Given that our analysis has confirmed both key assumptions of linear
+regression---normality of residuals and homoscedasticity---we can assert
+that our linear regression model is valid. This validity implies that
+the model is well-founded and that the statistical inferences drawn from
+it, such as confidence intervals and hypothesis tests on the regression
+coefficients, are based on solid assumptions.
+
+\subsection{Refrences}\label{refrences}
+
+Khalighi Sirvan, Teresa Sousa, José Moutinho Santos, and Urbano Nunes.
+``ISRUC-Sleep: A comprehensive public dataset for sleep
+researchers.``Computer methods and programs in biomedicine 124 (2016):
+180-192.
 
 \end{document}
